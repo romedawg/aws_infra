@@ -3,18 +3,12 @@ module "base_network_topology" {
   source = "../../modules/base"
 }
 
+
+
 # Route53 items
 module "romedawg_route53" {
   source = "../../modules/infrastructure/route53"
 }
-
-# DLM TESTING
-module "dlm_policy" {
-  source = "../../modules/dlm_testing"
-  environment = "dev"
-}
-
-
 
 #
 #module "romedawg_ses" {

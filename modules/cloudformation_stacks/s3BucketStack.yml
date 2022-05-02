@@ -1,0 +1,42 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description:
+  This stack creates an s3 bucket with a lifecycle policy
+
+Parameters:
+  DestinationBucketName:
+    Description: Bucket name to store access logs.
+    Type: String
+    Default: bucket_testing-101
+
+Resources:
+  Bucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    Properties:
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      LifecycleConfiguration:
+        Rules:
+          - Id: CouchbaseBackupRulePROD
+            Status: Enabled
+            Prefix: /aws-prod/couchbase_enterprise/
+            ExpirationInDays: 7
+            NoncurrentVersionExpirationInDays: 7
+          - Id: CouchbaseBackupRuleUAT
+            Status: Enabled
+            Prefix: /aws-uat/couchbase_enterprise/
+            ExpirationInDays: 7
+            NoncurrentVersionExpirationInDays: 7
+          - Id: CouchbaseBackupRuleQA
+            Status: Enabled
+            Prefix: /aws-qa/couchbase_enterprise/
+            ExpirationInDays: 7
+            NoncurrentVersionExpirationInDays: 7
+
+Outputs:
+  Bucket:
+    Value: !Ref Bucket
+  BucketArn:
+    Value: !GetAtt Bucket.Arn

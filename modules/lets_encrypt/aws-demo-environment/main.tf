@@ -2,7 +2,7 @@
 #  AWS : Networking Resources
 # -----------------------------------------------
 resource "aws_vpc" "demovpc" {
-  cidr_block = "10.20.100.0/24"
+  cidr_block           = "10.20.100.0/24"
   enable_dns_hostnames = true
 
   tags {
@@ -15,8 +15,8 @@ resource "aws_vpc" "demovpc" {
 resource "aws_internet_gateway" "demovpc-ig" {
   vpc_id = "${aws_vpc.demovpc.id}"
   tags {
-    Name = "letfdemo-ig"
-    Purpose = "letfdemo"    
+    Name    = "letfdemo-ig"
+    Purpose = "letfdemo"
   }
 }
 
@@ -35,8 +35,8 @@ resource "aws_subnet" "public" {
   map_public_ip_on_launch = true
 
   tags {
-    Name = "letfdemo-subnet"
-    Purpose = "letfdemo"    
+    Name    = "letfdemo-subnet"
+    Purpose = "letfdemo"
   }
 }
 
@@ -67,8 +67,8 @@ resource "aws_security_group" "elb" {
   }
 
   tags {
-    Name = "letfdemo-sg-elb"
-    Purpose = "letfdemo"    
+    Name    = "letfdemo-sg-elb"
+    Purpose = "letfdemo"
   }
 }
 
@@ -85,7 +85,7 @@ resource "aws_iam_server_certificate" "elb_cert" {
 
 resource "aws_elb" "web" {
   name = "letfdemo-elb-www"
-  
+
   subnets         = ["${aws_subnet.public.id}"]
   security_groups = ["${aws_security_group.elb.id}"]
   instances       = ["${aws_instance.nginx.*.id}"]
@@ -141,7 +141,7 @@ resource "aws_security_group" "nginx-sg" {
   }
 
   tags {
-    Name = "letfdemo-nginx-sg"
+    Name    = "letfdemo-nginx-sg"
     Purpose = "letfdemo"
   }
 }
@@ -151,7 +151,7 @@ resource "aws_security_group" "nginx-sg" {
 # key pair, not creating a new key pair
 # ----------------------------------------------------
 resource "tls_private_key" "nginx-provisioner" {
-    algorithm   = "RSA"
+  algorithm = "RSA"
 }
 
 resource "aws_key_pair" "nginx-provisioning" {
@@ -182,14 +182,14 @@ resource "aws_instance" "nginx" {
     private_key = "${tls_private_key.nginx-provisioner.private_key_pem}"
   }
 
-  instance_type = "t2.micro"
-  ami           = "${data.aws_ami.ubuntu.id}"
-  key_name      = "${aws_key_pair.nginx-provisioning.id}"
+  instance_type          = "t2.micro"
+  ami                    = "${data.aws_ami.ubuntu.id}"
+  key_name               = "${aws_key_pair.nginx-provisioning.id}"
   vpc_security_group_ids = ["${aws_security_group.nginx-sg.id}"]
   # We're going to launch into the same single (public) subnet as our ELB. 
   # In a production environment it's more common to have a separate 
   # private subnet for backend instances.
-  subnet_id     = "${aws_subnet.public.id}"
+  subnet_id = "${aws_subnet.public.id}"
 
   # We run a remote provisioner on the instance after creating it.
   # In this case, we just install nginx and start it. By default,
@@ -206,5 +206,5 @@ resource "aws_instance" "nginx" {
   tags {
     Name    = "letfdemo-nginx${count.index + 1}"
     Purpose = "letfdemo"
-  }  
+  }
 }

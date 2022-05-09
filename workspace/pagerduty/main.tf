@@ -8,7 +8,7 @@ resource "pagerduty_service" "astronomer" {
 }
 
 resource "pagerduty_service_integration" "astronomer_platform" {
-  name                    = "Astronomer Platform"
-  service                 = pagerduty_service.astronomer.id
-  vendor                  = data.pagerduty_vendor.prometheus.id
+  name    = "Astronomer Platform"
+  service = pagerduty_service.astronomer.id
+  vendor  = data.pagerduty_vendor.prometheus.id
 }

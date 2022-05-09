@@ -17,13 +17,3 @@ output "domain" {
 output "private_key_pem" {
   value = tls_private_key.certificate_private_key.private_key_pem
 }
-
-// empty
-//output "acm_cert_certificate_request_pem" {
-//  value = acme_certificate.create_certificate.certificate_request_pem
-//}
-
-// Not working
-//output "acm_cert_certificate_pem" {
-//  value = acme_certificate.create_certificate.certificate_pem
-//}

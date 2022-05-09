@@ -1,7 +1,7 @@
 //resource "aws_security_group" "bastion" {
 //  name        = "bastion"
 //  description = "Allow SSH access to the bastion node from whitelist source IP"
-//  vpc_id      = aws_vpc.vpc.id
+//  vpc_id      = aws_vpc.vpc_old_do_not_use.id
 //
 //  ingress {
 //    from_port   = 22

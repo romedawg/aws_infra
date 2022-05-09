@@ -3,6 +3,12 @@ module "base_module" {
   source = "../infrastructure/networking/topology"
 }
 
+module "acl_module" {
+  source = "../infrastructure/networking/acl"
+  environment = var.environment
+  vpc         = module.base_module.vpc_id
+}
+
 module "iam_users" {
   source = "../infrastructure/iam/users"
 }

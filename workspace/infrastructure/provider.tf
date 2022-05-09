@@ -1,7 +1,7 @@
 provider "aws" {
   shared_credentials_file = "/Users/rrafacz/.aws/credentials"
-  region     = "us-east-1"
-  version    = "4.9.0"
+  region                  = "us-east-1"
+  version                 = "4.9.0"
 }
 
 provider "template" {

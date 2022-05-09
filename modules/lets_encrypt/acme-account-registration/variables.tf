@@ -1,2 +1,2 @@
-variable "server_url"         {}
+variable "server_url" {}
 variable "registration_email" {}

@@ -27,13 +27,13 @@
 // POSTGRES RDS TESTING
 //module "subnets" {
 //  source = "../modules/networking/subnets"
-//  vpc_id = module.vpc.vpc_id
+//  vpc_id = module.vpc_old_do_not_use.vpc_id
 //}
 
 //module "security_groups" {
 //  source      = "../modules/networking/acl"
 //  environment = local.environment
-//  vpc         = module.vpc.vpc_id
+//  vpc_old_do_not_use         = module.vpc_old_do_not_use.vpc_id
 //}
 //
 //module "rds_postgres" {

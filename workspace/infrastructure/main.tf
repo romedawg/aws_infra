@@ -2,6 +2,8 @@
 module "base_network_topology" {
   source      = "../../modules/base"
   environment = local.environment
+  region = local.region
+  certificate_arn = module.import_romedawg_acm.romedawg_certificate_arn
 }
 
 # Route53 items
@@ -16,26 +18,26 @@ module "romedawg_ses" {
   zone_id = module.romedawg_route53.zone_id
 }
 
-module "romedawg_ec2" {
-  source         = "../../modules/services/romedawg.com"
-  aws_account_id = local.account_id
-  aws_region     = local.region
-  environment    = "dev"
-  key_name       = "romedawg"
-  security_group = module.base_network_topology.bastion_security_group
-  subnet         = module.base_network_topology.acme_subnet_id
-  zone_id        = module.romedawg_route53.zone_id
-}
+#module "romedawg_ec2" {
+#  source         = "../../modules/services/romedawg.com"
+#  aws_account_id = local.account_id
+#  aws_region     = local.region
+#  environment    = "dev"
+#  key_name       = "romedawg"
+#  security_group = module.base_network_topology.bastion_security_group_id
+#  subnet         = module.base_network_topology.acme_subnet_id
+#  zone_id        = module.romedawg_route53.zone_id
+#}
 
 // Certificate creation
-resource "aws_s3_bucket" "cert_bucket" {
-  bucket = "certs19292912"
-  acl    = "private"
-
-  tags = {
-    Name = "certs"
-  }
-}
+#resource "aws_s3_bucket" "cert_bucket" {
+#  bucket = "certs19292912"
+#  acl    = "private"
+#
+#  tags = {
+#    Name = "certs"
+#  }
+#}
 
 module "acme-account-registration" {
   source             = "../../modules/lets_encrypt/acme-account-registration"
@@ -51,4 +53,13 @@ module "acme-cert-request" {
   aws_access_key_id     = var.aws_access_key_id
   aws_secret_access_key = var.aws_secret_access_key
   region                = local.region
+}
+
+module "import_romedawg_acm" {
+  source = "../../modules/certificates"
+
+  certificate_body  = module.acme-cert-request.certificate
+  certificate_chain = module.acme-cert-request.issuer_pem
+  domain_name       = module.acme-cert-request.domain
+  private_key       = module.acme-cert-request.private_key_pem
 }

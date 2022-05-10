@@ -40,6 +40,7 @@ resource "aws_route_table" "public_route_table" {
 module "subnets" {
   source = "./subnets"
   vpc_id =  aws_vpc.main_vpc.id
+  region = var.region
 
   main_gateway_id = aws_internet_gateway.main_gateway.id
 }

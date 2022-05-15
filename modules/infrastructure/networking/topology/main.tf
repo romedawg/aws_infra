@@ -1,5 +1,5 @@
 resource "aws_vpc" "main_vpc" {
-  cidr_block           = "10.30.0.0/16"
+  cidr_block           = "10.50.0.0/16"
   enable_dns_hostnames = true
 }
 

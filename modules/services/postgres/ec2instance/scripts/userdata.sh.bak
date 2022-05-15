@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+
+set -eux
+set -o pipefail
+
+set_metadata(){
+    local role
+    local role_url
+    local role_response
+    local creds_url="${METADATA_URL}/meta-data/iam/security-credentials"
+    local region_url="${METADATA_URL}/dynamic/instance-identity/document"
+
+    role="$(curl -sSLf "${creds_url}")"
+    role_url="${creds_url}/${role}"
+
+    role_response="$(mktemp)"
+    curl -sSLf "${role_url}" -o "${role_response}"
+
+    AWS_REGION="$(curl -fsS "${region_url}" | jq -r .region)"
+    AWS_ACCESS_KEY_ID="$(jq -r .AccessKeyId "${role_response}")"
+    AWS_SECRET_ACCESS_KEY="$(jq -r .SecretAccessKey "${role_response}")"
+    AWS_SESSION_TOKEN="$(jq -r .Token "${role_response}")"
+    NODE_DNS="$(curl -s "${METADATA_URL}/meta-data/hostname")"
+
+    export AWS_REGION NODE_DNS AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN
+    rm -f "${role_response}"
+}
+
+apt-get update
+apt-get --yes install awscli jq
+
+export METADATA_URL="http://169.254.169.254/latest"
+set_metadata
+
+S3_BUCKET_URL="s3://ops-gohealth-bucket/sre/ec2-userdata-tools/mysql/prep_ec2.sh"
+
+aws s3 cp "${S3_BUCKET_URL}" /var/lib/cloud/instance/
+
+bash /var/lib/cloud/instance/userdata.sh
+
+exit 0
+

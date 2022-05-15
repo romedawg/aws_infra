@@ -18,26 +18,40 @@ module "romedawg_ses" {
   zone_id = module.romedawg_route53.zone_id
 }
 
+#######################
+# EC2 INSTANCES
+#######################
+# POSTGRES server
+#module "postgres" {
+#  source = "../../modules/services/postgres"
+#
+#  availability_zone_2a_metadata = {
+#      subnet_id = module.base_network_topology.public_subnet_id,
+#      zone_id = "us-east-2a" }
+#  aws_account_id                = local.account_id
+#  aws_region                    = local.region
+#  private_hosted_zone_id       = module.romedawg_route53.zone_id
+#  key_name                      = "roman_aws"
+#  security_group                = module.base_network_topology.postgres_security_group_id
+#}
+#
+#
+## This is used to renew romedawg.com certificate
 #module "romedawg_ec2" {
 #  source         = "../../modules/services/romedawg.com"
 #  aws_account_id = local.account_id
 #  aws_region     = local.region
 #  environment    = "dev"
-#  key_name       = "romedawg"
+#  key_name       = "roman_aws"
 #  security_group = module.base_network_topology.bastion_security_group_id
 #  subnet         = module.base_network_topology.acme_subnet_id
 #  zone_id        = module.romedawg_route53.zone_id
 #}
 
-// Certificate creation
-#resource "aws_s3_bucket" "cert_bucket" {
-#  bucket = "certs19292912"
-#  acl    = "private"
-#
-#  tags = {
-#    Name = "certs"
-#  }
-#}
+
+#######################
+# Certificates
+#######################
 
 module "acme-account-registration" {
   source             = "../../modules/lets_encrypt/acme-account-registration"

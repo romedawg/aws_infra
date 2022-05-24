@@ -27,4 +27,6 @@ output "default_drop_target_group_arn" {
   value = aws_lb_target_group.default_drop.arn
 }
 
-
+output "public_alb_dns_name" {
+  value = aws_lb.public.dns_name
+}

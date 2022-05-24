@@ -1,10 +1,19 @@
-#// acls
+// VPC
+output "vpc_id" {
+  value = module.base_module.vpc_id
+}
+
+// acls
 output "bastion_security_group_id" {
   value = module.acl_module.bastion_security_group_id
 }
 
 output "postgres_security_group_id" {
   value = module.acl_module.postgres_security_group_id
+}
+
+output "public_alb_security_group_id" {
+  value = module.acl_module.alb_security_group_id
 }
 
 
@@ -18,10 +27,14 @@ output "public_subnet_id" {
 }
 
 // ALB Items
-output "public_alb_arn" {
-  value = module.alb.public_alb_arn
-}
-
-output "default_drop_target_group_arn" {
-  value = module.alb.default_drop_target_group_arn
-}
+#output "public_alb_arn" {
+#  value = module.alb.public_alb_arn
+#}
+#
+#output "default_drop_target_group_arn" {
+#  value = module.alb.default_drop_target_group_arn
+#}
+#
+#output "public_alb_public_dns_name" {
+#  value = module.alb.public_alb_dns_name
+#}

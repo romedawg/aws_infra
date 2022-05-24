@@ -8,7 +8,6 @@ module "base_module" {
 module "alb" {
   source = "../infrastructure/networking/alb"
 
-  acm_certificate_arn       = var.certificate_arn
   default_target_group_name = "prod-drop"
   environment               = var.environment
   internal                  = "false"
@@ -19,7 +18,7 @@ module "alb" {
 }
 
 module "acl_module" {
-  source = "../infrastructure/networking/acl"
+  source      = "../infrastructure/networking/acl"
   environment = var.environment
   vpc         = module.base_module.vpc_id
 }

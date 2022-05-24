@@ -10,7 +10,7 @@
 //
 //module "acme-account-registration" {
 //
-//  source             = "../modules/lets_encrypt/acme-account-registration"
+//  source             = "../modules/lets_encrypt_certs/acme-account-registration"
 //  registration_email = "roman32@gmail.com"
 //  server_url         = "https://acme-v02.api.letsencrypt.org/directory"
 ////  server_url         = "https://acme-v02.api.letsencrypt.org/directory"
@@ -18,7 +18,7 @@
 //}
 //
 //module "acme-cert-request" {
-//  source          = "../modules/lets_encrypt/acme-cert-request"
+//  source          = "../modules/lets_encrypt_certs/acme-cert-request"
 //  account_key_pem = module.acme-account-registration.account_key_pem
 //  server_url         = "https://acme-v02.api.letsencrypt.org/directory"
 //}

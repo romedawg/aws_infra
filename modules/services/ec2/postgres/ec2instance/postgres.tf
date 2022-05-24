@@ -35,17 +35,17 @@ resource "aws_instance" "postgres_server" {
     encrypted   = var.encrypt_root_block_device
   }
 
-#  lifecycle {
-#    prevent_destroy = true
-#  }
+  #  lifecycle {
+  #    prevent_destroy = true
+  #  }
 
   tags = {
-    Name        = "postgres"
-    application = "postgres"
-    cluster     = var.cluster
+    Name                       = "postgres"
+    application                = "postgres"
+    cluster                    = var.cluster
     cluster_memeber_identifier = var.cluster-member-identifier
     # Convert the disk size of GiB to Bytes
-    data-dir-volume-size     = var.data_dir_volume_size * 1024 * 1024 * 1024
+    data-dir-volume-size = var.data_dir_volume_size * 1024 * 1024 * 1024
   }
 }
 
@@ -64,7 +64,7 @@ resource "aws_ebs_volume" "data_dir_volume" {
   encrypted = true
 
   tags = {
-    Name                 = "postgres-data-dir"
+    Name                = "postgres-data-dir"
     data-dir-volue-size = var.data_dir_volume_size
   }
 }

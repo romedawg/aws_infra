@@ -2,8 +2,7 @@
 module "base_network_topology" {
   source      = "../../modules/base"
   environment = local.environment
-  region = local.region
-  certificate_arn = module.import_romedawg_acm.romedawg_certificate_arn
+  region      = local.region
 }
 
 # Route53 items
@@ -13,7 +12,7 @@ module "romedawg_route53" {
 
 #  Mail server
 module "romedawg_ses" {
-  source  = "../../modules/ses"
+  source  = "../../modules/services/ses"
   domain  = module.romedawg_route53.domain
   zone_id = module.romedawg_route53.zone_id
 }
@@ -52,28 +51,38 @@ module "romedawg_ses" {
 #######################
 # Certificates
 #######################
-
-module "acme-account-registration" {
-  source             = "../../modules/lets_encrypt/acme-account-registration"
-  registration_email = "roman32@gmail.com"
-  server_url         = "https://acme-v02.api.letsencrypt.org/directory"
-}
-
-module "acme-cert-request" {
-  source          = "../../modules/lets_encrypt/acme-cert-request"
-  account_key_pem = module.acme-account-registration.account_key_pem
-  server_url      = "https://acme-v02.api.letsencrypt.org/directory"
-
+module "lets_encrypt_cert" {
+  source                = "../../modules/services/lets_encrypt_certs"
+  registrant_email      = "roman32@gmail.com"
+  server_url            = "https://acme-v02.api.letsencrypt.org/directory"
   aws_access_key_id     = var.aws_access_key_id
   aws_secret_access_key = var.aws_secret_access_key
   region                = local.region
+  domain                = "romedawg.com"
 }
 
 module "import_romedawg_acm" {
   source = "../../modules/certificates"
 
-  certificate_body  = module.acme-cert-request.certificate
-  certificate_chain = module.acme-cert-request.issuer_pem
-  domain_name       = module.acme-cert-request.domain
-  private_key       = module.acme-cert-request.private_key_pem
+  certificate_body  = module.lets_encrypt_cert.certificate
+  certificate_chain = module.lets_encrypt_cert.certificate_chain
+  domain_name       = module.lets_encrypt_cert.domain_name
+  private_key       = module.lets_encrypt_cert.private_key
+}
+
+## Now we can create ALB Listener
+module "alb_listener" {
+  source = "../../modules/infrastructure/networking/alb/alb_listener"
+
+  alb_arn          = module.base_network_topology.public_alb_arn
+  certificate_arn  = module.import_romedawg_acm.romedawg_certificate_arn
+  default_drop_arn = module.base_network_topology.default_drop_target_group_arn
+}
+
+
+#######################
+# ECS Cluster
+#######################
+module "ecs_cluster" {
+  source = "../../modules/infrastructure/ecs/cluster"
 }

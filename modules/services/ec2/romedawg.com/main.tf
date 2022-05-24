@@ -5,7 +5,7 @@ resource "aws_eip" "romedawg_eip" {
 
 resource "aws_instance" "romedawg_ec2" {
   user_data  = base64encode(file("${path.module}/scripts/userdata.sh"))
-  ami        = data.aws_ami.ubuntu_base.id
+  ami        = "ami-0ab0629dba5ae551d"
   monitoring = true
   key_name   = var.key_name
 

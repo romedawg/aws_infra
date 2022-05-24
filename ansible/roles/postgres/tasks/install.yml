@@ -1,0 +1,37 @@
+---
+- name: Create task definition
+  ecs_taskdefinition: "{{ postgres_taskdefinition }}"
+
+- name: create/update postgres service
+  community.aws.ecs_service:
+    state: present
+    launch_type: EC2
+    name: "{{ service_name }}"
+    cluster: "{{ ecs_cluster }}"
+    task_definition: "{{ task_definition_family }}"
+    desired_count: 1
+    deployment_configuration:
+      minimum_healthy_percent: 0  # only one instance at a time
+      maximum_percent: 100
+#    placement_constraints:
+#      - type: memberOf
+#        expression: "attribute:application_postgres-romedawg == 'true'"
+##        expression: "attribute:application_{{ service_name }} == 'true'"
+#      - type: distinctInstance
+    placement_strategy:
+      - type: spread
+        field: instanceId
+
+#- name: Wait for all tasks
+#  ansible.builtin.command:
+#    argv:
+#      - "{{ root_dir }}/ansible_collections/gohealth/common/roles/common/wait-for-ecs-tasks.sh"
+#      - "{{ ecs_cluster }}"
+#      - "{{ service_name }}"
+#      - 3
+#      - "{{ aws_region }}"
+#  changed_when: false
+#
+#- name: Wait for service to stabilize
+#  ansible.builtin.command: "aws ecs wait services-stable --cluster={{ ecs_cluster }} --services {{ service_name }} --region {{ aws_region }}"
+#  changed_when: false

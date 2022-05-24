@@ -1,0 +1,4 @@
+---
+#- include: prepare_vars.yml
+#- include: setup_container_instances.yml
+- include: install.yml

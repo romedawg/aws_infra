@@ -1,6 +1,6 @@
 // Standalone postgres instances
 module "aws_iam_instance_profile" {
-  source = "iam"
+  source = "./iam"
 
   aws_account_id = var.aws_account_id
   aws_region     = var.aws_region
@@ -10,7 +10,7 @@ module "aws_iam_instance_profile" {
 }
 
 module "postgres_us_east_2a" {
-  source = "ec2instance"
+  source = "./ec2instance"
 
   cluster-member-identifier = "${var.availability_zone_2a_metadata.zone_id}-1"
   cluster                   = local.cluster

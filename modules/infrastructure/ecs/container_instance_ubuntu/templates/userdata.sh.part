@@ -1,0 +1,85 @@
+set -uxeo pipefail
+
+function mount_disk(){
+    # Mount Disks
+    PARTITION="${device_name}"
+    MOUNT=/mnt/disk1
+    FILE_SYSTEM_TYPE=ext4
+
+    if [[ ! -e "${PARTITION}" ]];then
+      echo "device ${PARTITION} not found"
+      exit 1
+    fi
+
+    if mount | grep "${DISK}"; then
+      echo "disk ${DISK} already mounted"
+      continue
+    fi
+
+    if ! blkid "${PARTITION}" &>/dev/null; then
+        # This PARTITION is not yet formatted.
+        if ! mkfs.ext4 "${PARTITION}"; then
+          echo "failed to create mkfs.ext4 on ${PARTITION}"
+          exit 1
+        fi
+    fi
+
+    mkdir -p "${MOUNT}"
+    chmod 1777 "${MOUNT}"
+
+    DISK_ID="$(blkid -c /dev/null -o value -s UUID "${PARTITION}")"
+    echo -e "UUID=${DISK_ID}  ${MOUNT} ${FILE_SYSTEM_TYPE} defaults 0   2 # At format time, it was ${PARTITION}" >> /etc/fstab
+
+    if ! /bin/mount "${PARTITION}" "${MOUNT}"; then
+          echo "failed to mount ${PARTITION}"
+          exit 1
+    fi
+
+    chmod 1777 "${MOUNT}"
+
+    return 0
+}
+
+[[ ! -f /var/log/user-data.log ]] && touch /var/log/user-data.log
+chmod 600 /var/log/user-data.log
+exec > >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1
+
+# Install docker
+apt-get install -y \
+    ca-certificates \
+    curl \
+    gnupg \
+    lsb-release
+mkdir -p /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+apt-get update
+apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
+
+# this is needed otherwise ecs gets an error
+echo "GRUB_CMDLINE_LINUX=systemd.unified_cgroup_hierarchy=false" | tee /etc/default/grub.d/cgroup.cfg
+update-grub
+
+# Install ECS
+curl https://s3.us-east-2.amazonaws.com/amazon-ecs-agent-us-east-2/amazon-ecs-init-latest.amd64.deb -o /tmp/amazon-ecs-init-latest.amd64.deb
+dpkg -i /tmp/amazon-ecs-init-latest.amd64.deb
+
+# Set any ECS agent configuration options
+echo "ECS_CLUSTER=${ecs_cluster_name}" >> /etc/ecs/ecs.config
+echo 'ECS_AVAILABLE_LOGGING_DRIVERS=["awslogs","json-file"]' >> /etc/ecs/ecs.config
+ECS_CONTAINER_INSTANCE_TAGS='{"cluster":"'"${application_cluster}"'"}'
+echo "ECS_CONTAINER_INSTANCE_TAGS=${ECS_CONTAINER_INSTANCE_TAGS}" >> /etc/ecs/ecs.config
+ECS_INSTANCE_ATTRIBUTES='{"application_'"${application_cluster}"'": "true"}'
+echo "ECS_INSTANCE_ATTRIBUTES=${ECS_INSTANCE_ATTRIBUTES}" >> /etc/ecs/ecs.config
+
+# Format and mount Disk
+# TODO Fix udev rules(found in ansible-common)
+# mount_disk
+
+# mkdir -p "/mnt/disk1/${application_name}"
+# chown -R "${container_uid}" "/mnt/disk1/${application_name}"
+
+# Start ECS agent - https://github.com/aws/amazon-ecs-agent/issues/1707
+systemctl enable --now --no-block ecs.service

@@ -1,0 +1,25 @@
+---
+- name: set terraform binary checksum
+  shell: "set -o pipefail && curl -s https://releases.hashicorp.com/terraform/{{ terraform_version }}/terraform_{{ terraform_version }}_SHA256SUMS | grep terraform_{{ terraform_version }}_{{ os_type | default('linux') }}_amd64.zip | awk '{ print $1}'"
+  register: terraform_binary_checksum
+  args:
+    executable: /bin/bash
+  changed_when: terraform_binary_checksum is undefined
+- name: download terraform binary
+  get_url:
+    url: "{{ terraform_binary_url }}"
+    dest: /tmp/terraform.zip
+    checksum: "sha256:{{ terraform_binary_checksum.stdout }}"
+- name: unzip terraform binary
+  unarchive:
+    src: /tmp/terraform.zip
+    dest: /tmp
+    mode: 0550
+- name: Applying terraform
+  terraform:
+    project_path: "{{ project_path }}"
+    binary_path: "{{ binary_path |default('/tmp/terraform') }}"
+    state: "{{ state }}"
+    force_init: "{{ force_init|default(false) }}"
+    variables:
+      cluster: "{{ cluster }}"

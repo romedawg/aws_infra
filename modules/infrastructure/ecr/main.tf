@@ -1,5 +1,5 @@
 resource "aws_ecr_repository" "public_ecr" {
-  name                 = "public-ecr"
+  name                 = "romedawg"
   image_tag_mutability = "MUTABLE"
 
   image_scanning_configuration {

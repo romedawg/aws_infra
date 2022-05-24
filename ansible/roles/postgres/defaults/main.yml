@@ -1,0 +1,46 @@
+---
+aws_region: us-east-2
+application: postgres
+service_name: postgres
+ecs_cluster: "rome"
+log_group_name: "/aws/postgres/romedawg"
+task_definition_family: "dev-postgres"
+debug_logs: 0
+postgres_image_repo_uri: "701164309191.dkr.ecr.us-east-2.amazonaws.com/romedawg"
+base_image: postgres-14
+image_version: latest
+role_arn: "arn:aws:iam::701164309191:role/postgres"
+
+postgres_image_repo_credentials:
+  secrets: [ ]
+
+postgres_container_definition:
+  name: postgres
+  essential: true
+  image: "{{ postgres_image_repo_uri }}/{{base_image}}:{{ image_version }}"
+  healthCheck:
+    command:
+      - docker-healthcheck.sh
+  portMappings:
+    - containerPort: 5432
+      hostPort: 5432
+  logConfiguration:
+    logDriver: awslogs
+    options:
+      awslogs-group: "{{ log_group_name }}"
+      awslogs-region: us-east-2
+      awslogs-stream-prefix: "dev-{{ application }}"
+
+# this has been extracted to a variable because it's used also in upgrade/rollback playbooks
+postgres_taskdefinition:
+  family: "{{ task_definition_family }}"
+  launch_type: EC2
+  force_create: yes
+  network_mode: host
+  task_role_arn: "{{ role_arn }}"
+  execution_role_arn: "{{ role_arn }}"
+  memory: 1024
+  containers:
+    - "{{ postgres_container_definition | combine(postgres_image_repo_credentials, list_merge='append') }}"
+#    - "{{ aws_logger_container_definition }}"  # pulled from ecs_sidecars role
+  state: present

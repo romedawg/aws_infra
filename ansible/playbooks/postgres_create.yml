@@ -1,0 +1,26 @@
+- name: Provisioning of Backup and Couchbase instances
+  hosts: localhost
+  gather_facts: false
+  collections: gohealth.common
+  tasks:
+    - name: terraform apply couchbase-upgrade workspace
+      import_role:
+        name: terraform_workspace
+      vars:
+        project_path: '../terraform-workspace/postgres'
+        state: present
+        force_init: true
+        terraform_version: 0.13.6
+        # this is a variable passed into the terraform-module(aka test-id so deployments are unique)
+        cluster: "romedawg"
+        include_logrouter: true
+    # Creating log group here(instead of terraform since it's not part of the service module)
+    - name: create log group
+      cloudwatchlogs_log_group:
+        log_group_name: "/aws/postgres/romedawg"
+
+- name: Postgres ECS task installation
+  hosts: "localhost"
+  gather_facts: false
+  roles:
+    - ../roles/postgres

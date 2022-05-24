@@ -1,0 +1,22 @@
+---
+- name: Get postgres ec2 instances facts
+  ec2_instance_info:
+    region: "{{ aws_region }}"
+    filters:
+      instance-state-name: running
+      "tag:application": "{{ application }}"
+      "tag:environment": "dev"
+      "tag:cluster": "romedawg"
+  register: instances_facts
+- name: Write postgres myid file
+  become: yes
+  lineinfile:
+    path: /mnt/disk1/porgres/myid
+    create: yes
+    owner: '7009'
+    group: '7009'
+    mode: '0644'
+    line: "{{ item.tags.node_id }}"
+  remote_user: ec2-user
+  delegate_to: "{{ item.private_ip_address }}"
+  with_items: "{{ instances_facts.instances }}"

@@ -1,21 +1,21 @@
-data "aws_ami" "ubuntu_base" {
-  most_recent = true
-
-  filter {
-    name   = "name"
-    values = ["ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-20191002"]
-  }
-
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
-  }
-
-  owners = ["099720109477"] # Canonical
-}
+#data "aws_ami" "ubuntu_base" {
+#  most_recent = true
+#
+#  filter {
+#    name   = "name"
+#    values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-arm64-server-20230115"]
+#  }
+#
+#  filter {
+#    name   = "virtualization-type"
+#    values = ["hvm"]
+#  }
+#
+#  owners = ["ami-08de105e126fec8d8"] # Canonical
+#}
 
 resource "aws_instance" "postgres_server" {
-  ami               = data.aws_ami.ubuntu_base.id
+  ami               = "ami-0ab0629dba5ae551d"
   monitoring        = true
   key_name          = var.key_name
   user_data         = base64encode(file("${path.module}/scripts/userdata.sh"))

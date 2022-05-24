@@ -1,0 +1,16 @@
+---
+collections:
+  - name: https://bb.dev.norvax.net/scm/dep/ansible-common.git#/
+    type: git
+  - name: https://bb.dev.norvax.net/scm/dep/ansible-newrelic.git#/
+    type: git
+  - name: https://bb.dev.norvax.net/scm/dep/ansible-logrotate.git#/
+    type: git
+  - name: https://bb.dev.norvax.net/scm/dep/ansible-ec2-td-agent.git#/
+    type: git
+  - name: amazon.aws
+    version: 1.3.0
+  - name: community.aws
+    version: 1.0.0
+  - name: community.general
+    version: 3.4.0

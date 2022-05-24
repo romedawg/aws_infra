@@ -10,7 +10,7 @@
 resource "aws_subnet" "public_subnet" {
   vpc_id                  = var.vpc_id
   cidr_block              = "10.50.0.0/24"
-  availability_zone = "${var.region}a"
+  availability_zone       = "${var.region}a"
   map_public_ip_on_launch = true
 
   tags = {
@@ -21,7 +21,7 @@ resource "aws_subnet" "public_subnet" {
 resource "aws_subnet" "acme_subnet" {
   vpc_id                  = var.vpc_id
   cidr_block              = "10.50.2.0/24"
-  availability_zone = "${var.region}b"
+  availability_zone       = "${var.region}b"
   map_public_ip_on_launch = true
 
   tags = {

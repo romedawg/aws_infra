@@ -1,0 +1,38 @@
+set -uxeo pipefail
+
+[[ ! -f /var/log/user-data.log ]] && touch /var/log/user-data.log
+chmod 600 /var/log/user-data.log
+exec > >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1
+
+function download_script() {
+    local local_dir=$1
+    local name=$2
+    local full_path=
+    full_path="${local_dir}/${name}"
+    if ! aws s3 cp "s3://romedawg/sre/ec2-userdata-tools/${name}" "${full_path}" ; then
+    echo "Failed to download script ${name} from S3"
+    return 1
+    fi
+    chmod u+x "${full_path}"
+}
+
+yum update -y
+yum install -y awscli jq ec2-instance-connect
+
+SCRIPT_DIR="$(mktemp -d)"
+
+# Format disk
+download_script "${SCRIPT_DIR}" format_disk.sh
+"${SCRIPT_DIR}/format_disk.sh" data-volume-size /mnt/disk1 ext4
+chmod -R 1777 /mnt/disk1
+mkdir -p "/mnt/disk1/${application_name}"
+chown -R "${container_uid}" "/mnt/disk1/${application_name}"
+
+# Set any ECS agent configuration options
+echo "ECS_CLUSTER=${ecs_cluster_name}" >> /etc/ecs/ecs.config
+echo 'ECS_AVAILABLE_LOGGING_DRIVERS=["awslogs","json-file"]' >> /etc/ecs/ecs.config
+ECS_INSTANCE_ATTRIBUTES='{"application_'"${ecs_service}"'": "true"}'
+echo "ECS_INSTANCE_ATTRIBUTES=${ECS_INSTANCE_ATTRIBUTES}" >> /etc/ecs/ecs.config
+
+# Remove the downloaded scripts
+rm -rf "${SCRIPT_DIR}"

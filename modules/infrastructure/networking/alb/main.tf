@@ -40,16 +40,16 @@ resource "aws_lb_listener" "front_end" {
 # For details about SSL policy, see:
 # https://docs.aws.amazon.com/elasticloadbalancing/latest/application/create-https-listener.html
 
-resource "aws_lb_listener" "tls_front_end" {
-  load_balancer_arn = aws_lb.public.arn
-  port              = "443"
-  protocol          = "HTTPS"
-  ssl_policy        = "ELBSecurityPolicy-TLS-1-2-2017-01"
-  certificate_arn   = var.acm_certificate_arn
-
-  default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.default_drop.arn
-  }
-}
+#resource "aws_lb_listener" "alb_listener" {
+#  load_balancer_arn = aws_lb.public.arn
+#  port              = "443"
+#  protocol          = "HTTPS"
+#  ssl_policy        = "ELBSecurityPolicy-TLS-1-2-2017-01"
+#  certificate_arn   = var.acm_certificate_arn
+#
+#  default_action {
+#    type             = "forward"
+#    target_group_arn = aws_lb_target_group.default_drop.arn
+#  }
+#}
 

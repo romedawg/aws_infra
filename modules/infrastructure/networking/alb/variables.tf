@@ -16,9 +16,9 @@ variable "subnets" {
   type        = list(string)
 }
 
-variable "acm_certificate_arn" {
-  description = "Default certificate for the TLS listener"
-}
+#variable "acm_certificate_arn" {
+#  description = "Default certificate for the TLS listener"
+#}
 
 variable "internal" {
   description = "specifies whether load balancer is accessible outside a vpc. set to true to only allow access from within the vpc. Set to false to allow access outside the vpc."

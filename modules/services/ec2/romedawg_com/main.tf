@@ -1,11 +1,11 @@
 # Create Route53 entry
-resource "aws_route53_record" "postgres_romedawg_com" {
-  name    = "postgres.romedawg.com"
-  type    = "A"
-  ttl     = 5
-  zone_id = var.route53_zone_id
-  records = [module.node_1_m6i.private_ip]
-}
+#resource "aws_route53_record" "promedawg_com" {
+#  name    = "romedawg.com"
+#  type    = "CNAME"
+#  ttl     = 5
+#  zone_id = var.route53_zone_id
+#  records = [var.alb_hostname]
+#}
 
 module "node_1_m6i" {
   source                    = "../../../infrastructure/ecs/container_instance_ubuntu"

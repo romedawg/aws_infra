@@ -43,45 +43,33 @@ module "alb" {
 #######################
 # Certificates
 #######################
-#module "lets_encrypt_cert" {
-#  source                = "../../modules/services/lets_encrypt_certs"
-#  registrant_email      = "roman32@gmail.com"
-#  server_url            = "https://acme-v02.api.letsencrypt.org/directory"
-#  aws_access_key_id     = var.aws_access_key_id
-#  aws_secret_access_key = var.aws_secret_access_key
-#  region                = local.aws_region
-#  domain                = "romedawg.com"
-#}
-#
-#module "import_romedawg_acm" {
-#  source = "../../modules/certificates"
-#
-#  certificate_body  = module.lets_encrypt_cert.certificate
-#  certificate_chain = module.lets_encrypt_cert.certificate_chain
-#  domain_name       = module.lets_encrypt_cert.domain_name
-#  private_key       = module.lets_encrypt_cert.private_key
-#}
+module "lets_encrypt_cert" {
+  source                = "../../modules/services/lets_encrypt_certs"
+  registrant_email      = "roman32@gmail.com"
+  server_url            = "https://acme-v02.api.letsencrypt.org/directory"
+  aws_access_key_id     = var.aws_access_key_id
+  aws_secret_access_key = var.aws_secret_access_key
+  region                = local.aws_region
+  domain                = "romedawg.com"
+}
 
+module "import_romedawg_acm" {
+  source = "../../modules/certificates"
 
-#
+  certificate_body  = module.lets_encrypt_cert.certificate
+  certificate_chain = module.lets_encrypt_cert.certificate_chain
+  domain_name       = module.lets_encrypt_cert.domain_name
+  private_key       = module.lets_encrypt_cert.private_key
+}
+
 ### Now we can create ALB Listener, Cert created above
-#module "alb_listener" {
-#  source = "../../modules/infrastructure/networking/alb/alb_listener"
-#
-#  alb_arn          = module.alb.public_alb_arn
-#  certificate_arn  = module.import_romedawg_acm.romedawg_certificate_arn
-#  default_drop_arn = module.alb.default_drop_target_group_arn
-#}
+module "alb_listener" {
+  source = "../../modules/infrastructure/networking/alb/alb_listener"
 
-
-
-
-
-
-
-
-
-
+  alb_arn          = module.alb.public_alb_arn
+  certificate_arn  = module.import_romedawg_acm.romedawg_certificate_arn
+  default_drop_arn = module.alb.default_drop_target_group_arn
+}
 
 
 

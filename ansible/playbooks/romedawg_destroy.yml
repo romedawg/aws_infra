@@ -5,8 +5,8 @@
     - ../roles/postgres
   vars:
     desired_count: 0
-    application_name: postgres
-    image_repo_uri: "701164309191.dkr.ecr.us-east-2.amazonaws.com/romedawg/postgres-14"
+    application_name: romedawg
+    image_repo_uri: 701164309191.dkr.ecr.us-east-2.amazonaws.com/romedawg
 
 - name: Delete POSTGRES instances/logroup/service
   hosts: localhost
@@ -17,7 +17,7 @@
       import_role:
         name: terraform_workspace
       vars:
-        project_path: '../terraform-workspace/postgres'
+        project_path: '../terraform-workspace/romedawg'
         state: absent
         force_init: true
         terraform_version: 0.13.6
@@ -27,10 +27,10 @@
     # Creating log group here(instead of terraform since it's not part of the service module)
     - name: create log group
       cloudwatchlogs_log_group:
-        log_group_name: "/aws/couchbase/test{{ cluster }}"
+        log_group_name: "/aws/romedawg/romedawg"
         state: absent
     - name: delete service
       ecs_service:
         state: absent
-        name: postgres
+        name: romedawg
         cluster: rome

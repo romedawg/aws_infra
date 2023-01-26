@@ -19,9 +19,18 @@ resource "aws_security_group" "generic_security_group" {
     cidr_blocks = ["10.0.0.0/8"]
   }
 
+
   ingress {
-    from_port   = 5432
-    to_port     = 5432
+    from_port   = 8080
+    to_port     = 8080
+    protocol    = "tcp"
+    description = "internal ALB access any app on port 8080"
+    cidr_blocks = ["10.0.0.0/8", "24.15.4.0/24"]
+  }
+
+  ingress {
+    from_port   = 443
+    to_port     = 443
     protocol    = "tcp"
     description = "internal ALB access any app on port 8080"
     cidr_blocks = ["10.0.0.0/8", "24.15.4.0/24"]

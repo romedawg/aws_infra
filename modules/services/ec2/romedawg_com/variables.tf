@@ -46,3 +46,5 @@ variable "ami" {}
 variable "application_name" {}
 
 variable "route53_zone_id" {}
+
+variable "alb_hostname" {}

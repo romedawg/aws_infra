@@ -1,13 +1,11 @@
 ---
 aws_region: us-east-2
-application: postgres
-service_name: postgres
+application: "{{ application_name}}"
+service_name: "{{ application }}"
 ecs_cluster: "rome"
-log_group_name: "/aws/postgres/romedawg"
-task_definition_family: "dev-postgres"
+log_group_name: "/aws/{{ service_name }}/romedawg"
+task_definition_family: "dev-{{ service_name }}"
 debug_logs: 0
-postgres_image_repo_uri: "701164309191.dkr.ecr.us-east-2.amazonaws.com/romedawg"
-base_image: postgres-14
 image_version: latest
 role_arn: "arn:aws:iam::701164309191:role/postgres"
 
@@ -15,15 +13,42 @@ postgres_image_repo_credentials:
   secrets: [ ]
 
 postgres_container_definition:
-  name: postgres
+  name: "{{ service_name }}"
   essential: true
-  image: "{{ postgres_image_repo_uri }}/{{base_image}}:{{ image_version }}"
+  image: "{{ image_repo_uri }}:{{ image_version }}"
   healthCheck:
     command:
       - docker-healthcheck.sh
+  environment:
+    - name: POSTGRES_HOST
+      value: postgres.romedawg.com
+    - name: POSTGRES_USERNAME
+      value: romedawg
+    - name: POSTGRES_DATABASE
+      value: romedawg
+    - name: POSTGRES_PASSWORD
+      value: password
+    - name: ADMIN_USER
+      value: romedawg
+    - name: ADMIN_PASSWORD
+      value: password
+    - name: METRA_API_USERNAME
+      value: f1f57661005181a1238b7d958fdb889f
+    - name: METRA_API_PASSWORD
+      value: e9152c2ae51643ca236a3521d46d4f39
+    - name: SLACK_WEBHOOK
+      value: https://hooks.slack.com/services/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
+    - name: TWILIO_API_KEY
+      value: AC413b62bc99bd258960b97953315b3c46
+    - name: TWILIO_API_TOKEN
+      value: ac50139f09b054b32f9f4c9dab6e5292
   portMappings:
     - containerPort: 5432
       hostPort: 5432
+    - containerPort: 443
+      hostPort: 443
+    - containerPort: 8080
+      hostPort: 8080
   logConfiguration:
     logDriver: awslogs
     options:

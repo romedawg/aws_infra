@@ -1,7 +1,7 @@
 ###########################
 # ECS - Container Instances
 ###########################
-module "logrouter" {
+module "postgres" {
   # This is here only because of IAM roles and service discovery.
   source = "../../../modules/services/ec2/postgres_ecs_container"
   application_name ="postgres"
@@ -26,4 +26,5 @@ module "logrouter" {
 
   ssm_agent_policy_arn = aws_iam_policy.ssm_agent_instance_policy.arn
   ami                  = "ami-0ab0629dba5ae551d"
+  route53_zone_id      = "Z04258462YW3S2D7DVB4A"
 }

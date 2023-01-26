@@ -1,7 +1,7 @@
 - name: Provisioning of Backup and Couchbase instances
   hosts: localhost
   gather_facts: false
-  collections: gohealth.common
+  collections: common
   tasks:
     - name: terraform apply couchbase-upgrade workspace
       import_role:
@@ -18,6 +18,15 @@
     - name: create log group
       cloudwatchlogs_log_group:
         log_group_name: "/aws/postgres/romedawg"
+    - name: wait for container instances to come up
+      command:
+        argv:
+          - "../roles/common/wait-for-container-instances-cluster.sh"
+          - romedawg
+          - 1
+          - "us-east-2"
+      changed_when: false
+
 
 - name: Postgres ECS task installation
   hosts: "localhost"
@@ -26,3 +35,23 @@
     - ../roles/postgres
   vars:
     desired_count: 1
+
+
+- name: Wait for service to be healthy
+  hosts: "localhost"
+  gather_facts: false
+  tasks:
+    - name: Wait for all tasks
+      command:
+        argv:
+          - "../roles/common/wait-for-ecs-tasks.sh"
+          - rome
+          - "postgres"
+          - 1
+          - "us-east-2"
+      changed_when: false
+
+# TODO
+# Add a listener - This should be done as part of terraform infrastructure provisioning
+# add a target group
+#

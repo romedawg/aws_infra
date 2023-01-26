@@ -1,4 +1,12 @@
-- name: Provisioning of Backup and Couchbase instances
+- name: Drop postgres service count to 0
+  hosts: "localhost"
+  gather_facts: false
+  roles:
+    - ../roles/postgres
+  vars:
+    desired_count: 0
+
+- name: Delete POSTGRES instances/logroup/service
   hosts: localhost
   gather_facts: false
   collections: gohealth.common
@@ -12,10 +20,15 @@
         force_init: true
         terraform_version: 0.13.6
         # this is a variable passed into the terraform-module(aka test-id so deployments are unique)
-        cluster: "romedawg"
+        cluster: romedawg
         include_logrouter: true
     # Creating log group here(instead of terraform since it's not part of the service module)
     - name: create log group
       cloudwatchlogs_log_group:
         log_group_name: "/aws/couchbase/test{{ cluster }}"
         state: absent
+    - name: delete service
+      ecs_service:
+        state: absent
+        name: postgres
+        cluster: rome

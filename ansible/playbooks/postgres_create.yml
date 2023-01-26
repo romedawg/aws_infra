@@ -24,3 +24,5 @@
   gather_facts: false
   roles:
     - ../roles/postgres
+  vars:
+    desired_count: 1

@@ -59,6 +59,8 @@ apt-get update
 apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
 
 # this is needed otherwise ecs gets an error
+# CgroupError: Agent could not create task's platform resources
+# TODO fix this, currently requires a reboot
 echo "GRUB_CMDLINE_LINUX=systemd.unified_cgroup_hierarchy=false" | tee /etc/default/grub.d/cgroup.cfg
 update-grub
 
@@ -83,3 +85,6 @@ echo "ECS_INSTANCE_ATTRIBUTES=${ECS_INSTANCE_ATTRIBUTES}" >> /etc/ecs/ecs.config
 
 # Start ECS agent - https://github.com/aws/amazon-ecs-agent/issues/1707
 systemctl enable --now --no-block ecs.service
+
+# TODO fix this, currently requires a reboot
+shutdown -r now

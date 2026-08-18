@@ -7,15 +7,15 @@ data "template_file" "user_data_script" {
   template = file("${path.module}/templates/userdata_runner.sh.tpl")
 
   vars = {
-    ecs_cluster_name                  = var.ecs_cluster_name
-    container_uid                     = var.container_uid
-    ecs_service                       = var.ecs_service
-    application_name                  = var.application_name
-    environment                       = var.environment
-    application_cluster               = var.application_cluster
-    aws_region                        = "us-east-2"
-    device_name                       = var.device_name
-    userdata_content                  = file("${path.module}/templates/userdata.sh.part")
+    ecs_cluster_name    = var.ecs_cluster_name
+    container_uid       = var.container_uid
+    ecs_service         = var.ecs_service
+    application_name    = var.application_name
+    environment         = var.environment
+    application_cluster = var.application_cluster
+    aws_region          = "us-east-2"
+    device_name         = var.device_name
+    userdata_content    = file("${path.module}/templates/userdata.sh.part")
   }
 }
 
@@ -73,8 +73,8 @@ resource "aws_ebs_volume" "ebs" {
   iops              = var.data_volume_type != "gp2" ? var.data_volume_iops : null
 
   tags = {
-    application = var.application_name
-    node_id     = var.node_id
+    application        = var.application_name
+    node_id            = var.node_id
     application        = var.application_name
     cluster            = var.application_cluster
     container_instance = "true"

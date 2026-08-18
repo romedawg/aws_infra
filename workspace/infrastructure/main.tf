@@ -1,3 +1,19 @@
+import {
+  to = aws_organizations_organization.rome
+  id = "o-z7ap479ljb"
+}
+
+resource "aws_organizations_organization" "rome" {
+  ### Configuration omitted for brevity ###
+  aws_service_access_principals = [
+    "backup.amazonaws.com",
+    "sso.amazonaws.com",
+  ]
+  enabled_policy_types = [
+    "BACKUP_POLICY",
+  ]
+}
+
 # Network topology, Subnets, ACLS, etc.. all things networking
 module "base_network_topology" {
   source      = "../../modules/base"
@@ -18,19 +34,27 @@ module "romedawg_route53" {
 }
 
 #######################
+# Organization setting
+#######################
+
+module "organization" {
+  source = "../../modules/infrastructure/organization"
+}
+
+#######################
 # Create ALB Items
 #######################
-module "alb" {
-  source = "../../modules/infrastructure/networking/alb"
-
-  default_target_group_name = "prod-drop"
-  environment               = local.environment
-  internal                  = "false"
-  load_balancer_name        = "public-alb"
-  security_groups           = [module.base_network_topology.public_alb_security_group_id]
-  subnets                   = [module.base_network_topology.public_subnet_id, module.base_network_topology.acme_subnet_id]
-  vpc                       = module.base_network_topology.vpc_id
-}
+# module "alb" {
+#   source = "../../modules/infrastructure/networking/alb"
+#
+#   default_target_group_name = "prod-drop"
+#   environment               = local.environment
+#   internal                  = "false"
+#   load_balancer_name        = "public-alb"
+#   security_groups           = [module.base_network_topology.public_alb_security_group_id]
+#   subnets                   = [module.base_network_topology.public_subnet_id, module.base_network_topology.acme_subnet_id]
+#   vpc                       = module.base_network_topology.vpc_id
+# }
 
 
 ##  Mail server
@@ -43,34 +67,34 @@ module "alb" {
 #######################
 # Certificates
 #######################
-module "lets_encrypt_cert" {
-  source                = "../../modules/services/lets_encrypt_certs"
-  registrant_email      = "roman32@gmail.com"
-  server_url            = "https://acme-v02.api.letsencrypt.org/directory"
-  aws_access_key_id     = var.aws_access_key_id
-  aws_secret_access_key = var.aws_secret_access_key
-  region                = local.aws_region
-  domain                = "romedawg.com"
-}
-
-module "import_romedawg_acm" {
-  source = "../../modules/certificates"
-
-  certificate_body  = module.lets_encrypt_cert.certificate
-  certificate_chain = module.lets_encrypt_cert.certificate_chain
-  domain_name       = module.lets_encrypt_cert.domain_name
-  private_key       = module.lets_encrypt_cert.private_key
-}
+# module "lets_encrypt_cert" {
+#   source                = "../../modules/services/lets_encrypt_certs"
+#   registrant_email      = "roman32@gmail.com"
+#   server_url            = "https://acme-v02.api.letsencrypt.org/directory"
+#   aws_access_key_id     = var.aws_access_key_id
+#   aws_secret_access_key = var.aws_secret_key
+#   region                = local.aws_region
+#   domain                = "romedawg.com"
+# }
+#
+# module "import_romedawg_acm" {
+#   source = "../../modules/certificates"
+#
+#   certificate_body  = module.lets_encrypt_cert.certificate
+#   certificate_chain = module.lets_encrypt_cert.certificate_chain
+#   domain_name       = module.lets_encrypt_cert.domain_name
+#   private_key       = module.lets_encrypt_cert.private_key
+# }
 
 ### Now we can create ALB Listener, Cert created above
-module "alb_listener" {
-  source = "../../modules/infrastructure/networking/alb/alb_listener"
-
-  alb_arn          = module.alb.public_alb_arn
-  certificate_arn  = module.import_romedawg_acm.romedawg_certificate_arn
-  default_drop_arn = module.alb.default_drop_target_group_arn
-}
-
+# module "alb_listener" {
+#   source = "../../modules/infrastructure/networking/alb/alb_listener"
+#
+#   alb_arn          = module.alb.public_alb_arn
+#   certificate_arn  = module.import_romedawg_acm.romedawg_certificate_arn
+#   default_drop_arn = module.alb.default_drop_target_group_arn
+# }
+#
 
 
 

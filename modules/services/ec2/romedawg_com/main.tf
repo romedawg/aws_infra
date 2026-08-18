@@ -14,7 +14,7 @@ module "node_1_m6i" {
   subnet                    = var.subnets[0]
   environment               = var.environment
   application_name          = var.application_name
-  ecs_service               = "${var.application_name}"
+  ecs_service               = var.application_name
   application_cluster       = var.cluster
   ecs_cluster_name          = "rome"
   container_uid             = local.container_uid

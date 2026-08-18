@@ -3,18 +3,18 @@
 ###########################
 module "postgres" {
   # This is here only because of IAM roles and service discovery.
-  source = "../../../modules/services/ec2/postgres_ecs_container"
-  application_name ="postgres"
+  source           = "../../../modules/services/ec2/postgres_ecs_container"
+  application_name = "postgres"
 
   environment = "dev"
   cluster     = var.cluster
 
-  vpc                                       = local.vpc_id
-  ecs_managed_policy_arn                    = aws_iam_policy.elastic_container_service.arn
-  aws_account_id                            = local.aws_account_id
-  aws_region                                = local.aws_region
+  vpc                    = local.vpc_id
+  ecs_managed_policy_arn = aws_iam_policy.elastic_container_service.arn
+  aws_account_id         = local.aws_account_id
+  aws_region             = local.aws_region
 
-  key_name      = local.ssh_key_name
+  key_name = local.ssh_key_name
 
   iam_instance_profile_name = "dev-container_instance"
 

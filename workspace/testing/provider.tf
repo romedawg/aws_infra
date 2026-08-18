@@ -1,13 +1,13 @@
 provider "aws" {
-  shared_credentials_file = "/Users/rrafacz/.aws/credentials"
-  region                  = "us-east-1"
-  version                 = "2.60.0"
+  region  = "us-east-2"
+  version = "6.32.1"
 }
 
-provider "template" {
-  version = "2.1.2"
-}
 
-provider "random" {
-  version = "2.2.1"
-}
+# provider "template" {
+#   version = "2.1.2"
+# }
+#
+# provider "random" {
+#   version = "2.2.1"
+# }

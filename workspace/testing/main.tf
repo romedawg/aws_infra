@@ -62,3 +62,9 @@
 
 
 
+## RDS Param Group testing
+module "rds_param_group" {
+  source = "../../modules/infrastructure/rds"
+
+  environment = "qa"
+}

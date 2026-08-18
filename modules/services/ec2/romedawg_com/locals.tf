@@ -1,5 +1,5 @@
 locals {
-  task_name = "logrouter"
+  task_name           = "logrouter"
   application_cluster = "romedawg"
   data_volume_size    = "50"
   data_volume_type    = "gp3"

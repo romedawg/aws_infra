@@ -7,7 +7,7 @@ resource "tls_private_key" "certificate_private_key" {
 }
 
 resource "tls_cert_request" "tls_certificate_request" {
-  key_algorithm   = "RSA"
+  # key_algorithm   = "RSA"
   private_key_pem = tls_private_key.certificate_private_key.private_key_pem
   subject { common_name = var.domain }
   dns_names = ["*.${var.domain}"]

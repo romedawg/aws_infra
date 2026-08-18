@@ -12,7 +12,7 @@ data "aws_iam_policy_document" "ecs_taskrole_policy" {
 }
 
 resource "aws_iam_role" "ecs_taskrole" {
-  name               = "${var.application_name}"
+  name               = var.application_name
   assume_role_policy = data.aws_iam_policy_document.ecs_taskrole_policy.json
 
   tags = {

@@ -65,7 +65,7 @@ resource "aws_kms_key" "ebs" {
   })
 
   lifecycle {
-    prevent_destroy = true
+    prevent_destroy = false
   }
 }
 
@@ -73,6 +73,6 @@ resource "aws_kms_alias" "ebs" {
   name          = "alias/ebs-mysql-${var.environment}"
   target_key_id = aws_kms_key.ebs.key_id
   lifecycle {
-    prevent_destroy = true
+    prevent_destroy = false
   }
 }

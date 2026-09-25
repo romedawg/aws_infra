@@ -2,7 +2,7 @@ resource "aws_iam_user" "terraform_user" {
   name = "terraform-admin"
 
   lifecycle {
-    prevent_destroy = true
+    prevent_destroy = false
   }
 }
 
@@ -10,7 +10,7 @@ resource "aws_iam_user" "terraform_vendor_user" {
   name = "terraform-vendor"
 
   lifecycle {
-    prevent_destroy = true
+    prevent_destroy = false
   }
 }
 
@@ -21,7 +21,7 @@ resource "aws_iam_user_policy" "terraform_user_policy" {
   policy = data.aws_iam_policy_document.terraform_policy_document.json
 
   lifecycle {
-    prevent_destroy = true
+    prevent_destroy = false
   }
 }
 
@@ -33,7 +33,7 @@ resource "aws_iam_user_policy" "terraform_vendor_user_policy" {
   policy = data.aws_iam_policy_document.terraform_policy_document.json
 
   lifecycle {
-    prevent_destroy = true
+    prevent_destroy = false
   }
 }
 
@@ -41,7 +41,7 @@ resource "aws_iam_access_key" "terraform_key" {
   user = aws_iam_user.terraform_user.name
 
   lifecycle {
-    prevent_destroy = true
+    prevent_destroy = false
   }
 }
 
@@ -49,7 +49,7 @@ resource "aws_iam_access_key" "terraform_vendor_key" {
   user = aws_iam_user.terraform_vendor_user.name
 
   lifecycle {
-    prevent_destroy = true
+    prevent_destroy = false
   }
 }
 

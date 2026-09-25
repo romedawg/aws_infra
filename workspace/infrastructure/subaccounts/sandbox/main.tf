@@ -26,7 +26,6 @@ module "env" {
   route_all_private_subnets        = false
   egress_tgw_id                    = "gw-0cf24c00e8c24a4d5" // Network Egress transit_gateway_id
 
-
   adawsread_dn       = "test"
   adawsread_password = "test"
 

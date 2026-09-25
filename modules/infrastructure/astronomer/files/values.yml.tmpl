@@ -1,0 +1,72 @@
+#################################
+### Astronomer global configuration
+#################################
+global:
+  # Base domain for all subdomains exposed through ingress
+  baseDomain: "${var.base_domain}"
+
+  # Name of secret containing TLS certificate
+  tlsSecret: astronomer-tls
+
+  # Enable privateCaCerts only if your enterprise security team
+  # generated a certificate from a private certificate authority.
+  # Create a generic secret for each cert, and add it to the list below.
+  # Each secret must have a data entry for 'cert.pem'
+  # Example command: `kubectl create secret generic private-root-ca --from-file=cert.pem=./<your-certificate-filepath>`
+  privateCaCerts:
+    - private-root-ca
+
+  # Enable privateCaCertsAddToHost only when your nodes do not already
+  # include the private CA in their docker trust store.
+  # Most enterprises already have this configured,
+  # and in that case 'enabled' should be false.
+  privateCaCertsAddToHost:
+    enabled: true
+    hostDirectory: /etc/containerd/certs.d
+  # For development or proof-of-concept, you can use an in-cluster database
+  postgresqlEnabled: false
+
+  # Enables using SSL connections to
+  # encrypt client/server communication
+  # between databases and the Astronomer platform.
+  # If your database enforces SSL for connections,
+  # change this value to true. Incluster postgres only supports
+  # sslmode.enabled = false.
+  ssl:
+    enabled: false
+#################################
+### Nginx configuration
+#################################
+nginx:
+  # IP address the nginx ingress should bind to
+  loadBalancerIP: ~
+  #  Set to 'true' when deploying to a private EKS cluster.
+  privateLoadBalancer: false
+  # Dict of arbitrary annotations to add to the nginx ingress. For full configuration options, see https://docs.nginx.com/nginx-ingress-controller/configuration/ingress-resources/advanced-configuration-with-annotations/
+  ingressAnnotations: {service.beta.kubernetes.io/aws-load-balancer-type: nlb} # Change to 'elb' if your node group is private and doesn't utilize a NAT gateway
+  # If all subnets are private, auto-discovery may fail.
+  # You must enter the subnet IDs manually in the annotation below.
+  # service.beta.kubernetes.io/aws-load-balancer-subnets: subnet-id-1,subnet-id-2
+astronomer:
+  houston:
+    config:
+      publicSignups: false # Users need to be invited to have access to Astronomer. Set to true otherwise
+      emailConfirmation: true # Users get an email verification before accessing Astronomer
+      deployments:
+        manualReleaseNames: true # Allows you to set your release names
+        serviceAccountAnnotationKey: eks.amazonaws.com/role-arn # Flag to enable using IAM roles (don't enter a specific role)
+      email:
+        enabled: true
+        reply: "noreply@astronomer.io" # Emails will be sent from this address
+      auth:
+        github:
+          enabled: true # Lets users authenticate with Github
+        local:
+          enabled: false # Disables logging in with just a username and password
+        openidConnect:
+          google:
+            enabled: true # Lets users authenticate with Google
+    secret:
+      - envName: "EMAIL__SMTP_URL"  # Reference to the Kubernetes secret for SMTP credentials. Can be removed if email is not used.
+        secretName: "astronomer-smtp"
+        secretKey: "connection"

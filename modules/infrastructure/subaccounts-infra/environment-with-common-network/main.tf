@@ -4,8 +4,6 @@ module "common_network" {
   environment      = var.environment
   resolver_rule_id = var.resolver_rule_id
 
-  rome_transit_gateway_id     = local.rome_transit_gateway_id
-  internet_transit_gateway_id = local.internet_transit_gateway_id
 
   system = var.system
 
@@ -23,20 +21,15 @@ module "common_network" {
   route_all_private_subnets       = var.route_all_private_subnets
   private_route_table_association = var.private_route_table_association
 
-  capella_peering_id = var.capella_peering_id
-  capella_cidr_block = var.capella_cidr_block
-
-  capella_peering_id_uat = var.capella_peering_id_uat
-  capella_cidr_block_uat = var.capella_cidr_block_uat
 }
 
-module "dns" {
-  source = "./dns"
-
-  vpc_id           = module.common_network.vpc_id
-  resolver_rule_id = var.resolver_rule_id
-  hosted_zone_ids  = var.associated_hosted_zone_ids
-}
+# module "dns" {
+#   source = "./dns"
+#
+#   vpc_id           = module.common_network.vpc_id
+#   resolver_rule_id = var.resolver_rule_id
+#   hosted_zone_ids  = var.associated_hosted_zone_ids
+# }
 
 module "ssm" {
   source = "./ssm"

@@ -1,8 +1,7 @@
 resource "aws_security_group" "alb-public" {
-  name        = "public-alv"
+  name        = "public-alb"
   description = "Allow 80/443 routing to the public alb"
   vpc_id      = var.vpc
-
 
   ingress {
     from_port   = 80
@@ -16,6 +15,16 @@ resource "aws_security_group" "alb-public" {
     to_port     = 443
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port = 0
+    to_port   = 65000
+    protocol  = "tcp"
+
+    cidr_blocks = [
+      "0.0.0.0/0",
+    ]
   }
 
   tags = {

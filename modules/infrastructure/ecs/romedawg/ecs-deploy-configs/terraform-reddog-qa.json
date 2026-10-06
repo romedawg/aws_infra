@@ -1,0 +1,85 @@
+{
+  "qa": {
+    "sensitive": false,
+    "type": [
+      "object",
+      {
+        "aws_account_id": "string",
+        "aws_region": "string",
+        "bastion": "string",
+        "docker_repository_url": "string",
+        "ecr_repository_url": "string",
+        "ecs_cluster_name": "string",
+        "environment": "string",
+        "log_group": "string",
+        "security_group": "string",
+        "services": [
+          "object",
+          {
+            "reddog": [
+              "object",
+              {
+                "domain_name": "string",
+                "monitoring_disabled": "bool",
+                "service_registry_arn": "string",
+                "target_group": "string",
+                "task_role": "string",
+                "task_role_arn": "string",
+                "task_role_migration": "string",
+                "task_role_migration_arn": "string",
+                "task_role_migration_name": "string",
+                "task_role_name": "string"
+              }
+            ]
+          }
+        ],
+        "subnets": ["tuple", ["string", "string"]],
+        "tasks": [
+          "object",
+          {
+            "anthem_hra_data_backfill": [
+              "object",
+              {
+                "aws_s3_bucket_name": "string",
+                "task_role": "string",
+                "task_role_arn": "string",
+                "task_role_migration": "string",
+                "task_role_migration_arn": "string",
+                "task_role_migration_name": "string"
+              }
+            ]
+          }
+        ],
+        "user_timezone": "string"
+      }
+    ],
+    "value": {
+      "aws_account_id": "212124668512",
+      "aws_region": "us-east-2",
+      "docker_repository_url": "nexus-proxy.ops.gohealth.net:8082",
+      "ecr_repository_url": "212124668512.dkr.ecr.us-east-2.amazonaws.com",
+      "ecs_cluster_name": "arn:aws:ecs:us-east-2:212124668512:cluster/reddog-qa",
+      "environment": "qa",
+      "log_group": "qa-log-group",
+      "security_group": "sg-0c21126abf044b102",
+      "services": {
+        "reddog": {
+          "domain_name": "reddog.qa.internal.gohealth.net",
+          "monitoring_disabled": false,
+          "service_registry_arn": "arn:aws:servicediscovery:us-east-2:212124668512:service/srv-frcvodraaafulw2j",
+          "target_group_internal": "arn:aws:elasticloadbalancing:us-east-2:212124668512:targetgroup/method-qa-target-group-private/19abe28a91c42144",
+          "task_role": "qa-reddog",
+          "task_role_arn": "arn:aws:iam::212124668512:role/qa-reddog",
+          "task_role_name": "qa-reddog"
+        }
+      },
+      "subnets": [
+        "subnet-017c381c14e671f2a",
+        "subnet-086fbc1074ae0a9a2",
+        "subnet-02f641250e41755b7"
+      ],
+      "tasks": {},
+      "user_timezone": "-Duser.timezone=America/Chicago"
+    }
+  }
+}

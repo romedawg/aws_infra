@@ -1,5 +1,5 @@
 resource "aws_ecs_cluster" "rome" {
-  name = "rome"
+  name = var.cluster_name
 }
 
 output "name" {

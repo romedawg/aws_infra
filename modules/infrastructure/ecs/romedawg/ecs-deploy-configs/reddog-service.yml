@@ -1,0 +1,26 @@
+reddog:
+  name: reddog
+  configuration_item: consumer_marketplace
+  port: 8080
+  count: 2
+  cpu: 1024
+  memory: 2GB
+  deploy_timeout_minutes: 5
+  health_check_grace_period_seconds: 300
+  env:
+    API_GATEWAY_URL: 'https://api.{{.environment}}.gohealth.xyz'
+    CONFIG_ENV: '{{.environment}}'
+    REDDOG_HOST: 'reddog.{{.environment}}.internal.gohealth.net'
+  ssm_secrets:
+    X_API_KEY: '/consumer_marketplace_api_key/X_API_KEY'
+  logger_options:
+    ENABLED: 1
+  environment_override:
+    prod:
+      count: 4
+      cpu: 2048
+      memory: 4GB
+      env:
+        API_GATEWAY_URL: 'https://api.gohealth.com'
+        CONFIG_ENV: '{{.environment}}'
+        REDDOG_HOST: 'www.gohealth.com'

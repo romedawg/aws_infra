@@ -1,4 +1,4 @@
-#module "romedawg_com" {
+#module "romedawg_com.tf" {
 #  source                 = "../host_based_rule"
 #  host_header            = "specifications.${local.environment_url_base}"
 #  environment            = var.environment

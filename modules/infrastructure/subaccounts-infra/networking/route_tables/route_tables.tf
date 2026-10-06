@@ -9,7 +9,7 @@ resource "aws_route_table" "private_table_2a" {
     for_each = local.private_ip_ranges
     content {
       cidr_block         = route.value
-      transit_gateway_id = var.rome_network_egress_tgw_id
+      transit_gateway_id = var.internet_gateway_id
     }
   }
 
@@ -32,7 +32,7 @@ resource "aws_route_table" "private_table_2b" {
     for_each = local.private_ip_ranges
     content {
       cidr_block         = route.value
-      transit_gateway_id = var.rome_network_egress_tgw_id
+      transit_gateway_id = var.internet_gateway_id
     }
   }
 
@@ -54,7 +54,7 @@ resource "aws_route_table" "private_table_2c" {
     for_each = local.private_ip_ranges
     content {
       cidr_block         = route.value
-      transit_gateway_id = var.rome_network_egress_tgw_id
+      transit_gateway_id = var.internet_gateway_id
     }
   }
 
@@ -76,7 +76,7 @@ resource "aws_route_table" "public_table_2a" {
     for_each = local.private_ip_ranges
     content {
       cidr_block         = route.value
-      transit_gateway_id = var.rome_network_egress_tgw_id
+      transit_gateway_id = var.internet_gateway_id
     }
   }
 
@@ -99,7 +99,7 @@ resource "aws_route_table" "public_table_2b" {
     for_each = local.private_ip_ranges
     content {
       cidr_block         = route.value
-      transit_gateway_id = var.rome_network_egress_tgw_id
+      transit_gateway_id = var.internet_gateway_id
     }
   }
 
@@ -121,7 +121,7 @@ resource "aws_route_table" "public_table_2c" {
     for_each = local.private_ip_ranges
     content {
       cidr_block         = route.value
-      transit_gateway_id = var.rome_network_egress_tgw_id
+      transit_gateway_id = var.internet_gateway_id
     }
   }
 

@@ -1,0 +1,32 @@
+romedawg:
+  name: romedawg
+  configuration_item: rome
+  append_awsdata_image: false
+  port: 8080
+  count: 1
+  cpu: 1024
+  memory: 4GB
+  deploy_timeout_minutes: 5
+  health_check_grace_period_seconds: 300
+  logger_options:
+    ENABLED: 0
+    CLOUDWATCH: 1
+  env:
+    POSTGRES_DOMAIN: romedawg.cuqo4j764p9h.us-east-2.rds.amazonaws.com
+    POSTGRES_DATABASE: blog_db
+    POSTGRES_USERNAME: romedawg
+    POSTGRES_PASSWORD: blah!
+#    ENABLED: 0
+#    ALT_LOGGER_ENABLED: 1
+#    ALT_LOGGER_CONFIGURATION_TYPE: fluentd
+#    ALT_LOGGER_CONFIGURATION_FILE: /fluentd/etc/fluent-sidecar.conf
+#  awslogger_image_name: aws-logger-dev:latest
+#  environment_override:
+#    qa:
+#      logger_options:
+#        ENABLED: 1
+#        ALT_LOGGER_ENABLED: 1
+#        ALT_LOGGER_CONFIGURATION_TYPE: fluentd
+#        ALT_LOGGER_CONFIGURATION_FILE: /fluentd/etc/fluent-sidecar.conf
+##      awslogger_image_name: aws-logger-fluentbit-dev:latest
+

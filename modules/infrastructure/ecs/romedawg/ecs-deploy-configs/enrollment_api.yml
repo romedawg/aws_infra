@@ -1,0 +1,100 @@
+enrollment-api-server:
+  name: enrollment-api-server
+  configuration_item: enrollment_api
+  cost_center: sales
+  port: 8080
+  count: 3
+  cpu: 2048
+  memory: 6GB
+  deploy_timeout_minutes: 30
+  health_check_grace_period_seconds: 360
+#  migrations:
+#    appname: enrollment-api
+#    consul:
+#      host: "{{.consul_satori_internal_gohealth_net}}"
+#      port: 443
+#      token_required: true
+#    vault:
+#      scheme: https
+#      host: '{{.vault_horus_internal_gohealth_net}}'
+#      port: 443
+  ssm_secrets:
+    CONSUL_TOKEN: "/{{.environment}}/consul/enrollment-api/app_token"
+  logger_options:
+    ENABLED: 1
+    LOG_TYPE: syslog-rfc5424
+  environment_override:
+    qa:
+      env:
+        CONSUL_HOST: "{{.consul_satori_internal_gohealth_net}}"
+        CONSUL_PORT: 443
+        CONSUL_SCHEME: https
+        CUSTOM_JAVA_OPTS: >-
+          '-Dimq.useStaticAddressList=true'
+          '-Dlog4j2.formatMsgNoLookups=true'
+        JVM_HEAP_SIZE: 5120m
+        COUCHBASE_HOSTS: "couchbases://cb.nkvdsb8jngkqs-9b.cloud.couchbase.com"
+        COUCHBASE_TLS_ENABLED: true
+        VAULT_HOST: '{{.vault_horus_internal_gohealth_net}}'
+        VAULT_PORT: 443
+        VAULT_SCHEME: https
+        AWS_S3_SERVICE_ENDPOINT: https://s3.us-east-2.amazonaws.com
+        AWS_S3_BUCKET_NAME_APPLICATION_PDFS: '{{.services.enrollment_api_server.s3_bucket_application_pdfs}}'
+        AWS_S3_FORCE_PATH_STYLE_ACCESS: false
+        ANALYTICS_BACKEND: 'metarouter'
+        ANALYTICS_ENDPOINT: 'https://{{.metarouter_host}}'
+        ANALYTICS_WRITEKEY: 'analytics'
+        NEW_RELIC_ERROR_COLLECTOR_EXPECTED_STATUS_CODES: "400,401,403,404"
+        NEW_RELIC_ERROR_COLLECTOR_EXPECTED_CLASSES: '["com.norvax.enrollment.api.exceptions.NoEnrollmentProcessDefinedException", "org.springframework.security.access.AccessDeniedException", "com.norvax.enrollment.persistence.exceptions.UpdatingCompletedEnrollmentException", "org.springframework.web.client.HttpClientErrorException$BadRequest"]'
+      count: 3
+      logger_options:
+        ENABLED: 1
+        LOG_TYPE: syslog-rfc5424
+        FLUENTBIT_ENABLED: 1
+      awslogger_image_name: aws-logger-fluentbit-qa:latest
+    uat:
+      count: 2
+      fargate_spot: all
+      env:
+        CONSUL_HOST: "{{.consul_satori_internal_gohealth_net}}"
+        CONSUL_PORT: 443
+        CONSUL_SCHEME: https
+        CUSTOM_JAVA_OPTS: >-
+          '-Dimq.useStaticAddressList=true'
+          '-Dlog4j2.formatMsgNoLookups=true'
+        JVM_HEAP_SIZE: 5120m
+        COUCHBASE_HOSTS: couchbases://cb.rqhqounkiaymq2v.cloud.couchbase.com
+        COUCHBASE_TLS_ENABLED: true
+        VAULT_HOST: '{{.vault_horus_internal_gohealth_net}}'
+        VAULT_PORT: 443
+        VAULT_SCHEME: https
+        AWS_S3_SERVICE_ENDPOINT: https://s3.us-east-2.amazonaws.com
+        AWS_S3_BUCKET_NAME_APPLICATION_PDFS: '{{.services.enrollment_api_server.s3_bucket_application_pdfs}}'
+        AWS_S3_FORCE_PATH_STYLE_ACCESS: false
+        ANALYTICS_BACKEND: 'metarouter'
+        ANALYTICS_ENDPOINT: 'https://{{.metarouter_host}}'
+        ANALYTICS_WRITEKEY: 'analytics'
+        NEW_RELIC_ERROR_COLLECTOR_EXPECTED_STATUS_CODES: "400,401,403,404"
+        NEW_RELIC_ERROR_COLLECTOR_EXPECTED_CLASSES: '["com.norvax.enrollment.api.exceptions.NoEnrollmentProcessDefinedException", "org.springframework.security.access.AccessDeniedException", "com.norvax.enrollment.persistence.exceptions.UpdatingCompletedEnrollmentException", "org.springframework.web.client.HttpClientErrorException$BadRequest"]'
+    prod:
+      env:
+        CONSUL_HOST: "{{.consul_satori_internal_gohealth_net}}"
+        CONSUL_PORT: 443
+        CONSUL_SCHEME: https
+        CUSTOM_JAVA_OPTS: >-
+          '-Dimq.useStaticAddressList=true'
+          '-Dlog4j2.formatMsgNoLookups=true'
+        JVM_HEAP_SIZE: 5120m
+        COUCHBASE_HOSTS: couchbases://cb.tleea48p7gcqwht6.cloud.couchbase.com
+        COUCHBASE_TLS_ENABLED: true
+        VAULT_HOST: '{{.vault_horus_internal_gohealth_net}}'
+        VAULT_PORT: 443
+        VAULT_SCHEME: https
+        AWS_S3_SERVICE_ENDPOINT: https://s3.us-east-2.amazonaws.com
+        AWS_S3_BUCKET_NAME_APPLICATION_PDFS: '{{.services.enrollment_api_server.s3_bucket_application_pdfs}}'
+        AWS_S3_FORCE_PATH_STYLE_ACCESS: false
+        ANALYTICS_BACKEND: 'metarouter'
+        ANALYTICS_ENDPOINT: 'https://{{.metarouter_host}}'
+        ANALYTICS_WRITEKEY: 'analytics'
+        NEW_RELIC_ERROR_COLLECTOR_EXPECTED_STATUS_CODES: "400,401,403,404"
+        NEW_RELIC_ERROR_COLLECTOR_EXPECTED_CLASSES: '["com.norvax.enrollment.api.exceptions.NoEnrollmentProcessDefinedException", "org.springframework.security.access.AccessDeniedException", "com.norvax.enrollment.persistence.exceptions.UpdatingCompletedEnrollmentException", "org.springframework.web.client.HttpClientErrorException$BadRequest"]'

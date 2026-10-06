@@ -7,7 +7,7 @@ module "network" {
     # prefix_env          = var.managed_prefix_arns["qa_environments"]
     # prefix_uat          = var.managed_prefix_arns["uat_environments"]
     transit_gateway = var.transit_gateway_arn
-    dns_resolver    = data.aws_route53_resolver_rule.norvax_all.arn
+    # dns_resolver    = data.aws_route53_resolver_rule.norvax_all.arn
   }
 }
 
@@ -20,7 +20,7 @@ module "sandbox" {
     # prefix_env          = var.managed_prefix_arns["qa_environments"]
     # prefix_uat          = var.managed_prefix_arns["uat_environments"]
     transit_gateway = var.transit_gateway_arn
-    dns_resolver    = data.aws_route53_resolver_rule.norvax_all.arn
+    # dns_resolver    = data.aws_route53_resolver_rule.norvax_all.arn
   }
 }
 

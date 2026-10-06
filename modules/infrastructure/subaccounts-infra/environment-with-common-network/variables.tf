@@ -95,26 +95,11 @@ variable "newrelic_metric_stream_namespaces" {
   default = []
 }
 
-# https://gheng.atlassian.net/browse/CLOUD-1949 Capella peering
-variable "capella_peering_id" {
-  default = null
-}
-
-variable "capella_cidr_block" {
-  default = null
-}
-
-variable "capella_peering_id_uat" {
-  default = null
-}
-
-variable "capella_cidr_block_uat" {
-  default = null
-}
-
 
 variable "kms_cross_account_principals" {
   description = "List of external AWS account IDs granted KMS decrypt/encrypt access (e.g. Zscaler scanning)"
   type        = list(string)
   default     = []
 }
+
+variable "internet_transit_gateway_id" {}

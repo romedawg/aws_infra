@@ -12,8 +12,8 @@ locals {
     ops = "vpc-086d572573c623f5d"
   }
 
-  vpc_attachment_ids = concat([
-    module.ops_vpc_attachment.attachment_id,
-  ], var.subaccount_tgw_attachments)
+  # vpc_attachment_ids = concat([
+  #   module.ops_vpc_attachment.attachment_id,
+  # ], var.subaccount_tgw_attachments)
 
 }

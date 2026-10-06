@@ -2,7 +2,7 @@
 #  name    = "romedawg.com"
 #  ttl     = var.ttl
 #  type    = "A"
-#  zone_id = aws_route53_zone.romedawg_com.zone_id
+#  zone_id = aws_route53_zone.romedawg_com.tf.zone_id
 #
 #  records = [
 #    var.public_alb_dns_name,

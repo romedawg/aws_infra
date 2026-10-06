@@ -30,7 +30,6 @@ module "route_tables" {
 
   internet_gateway_id = module.gateways.internet_gateway_id
 
-  gohealth_transit_gateway_id = var.rome_transit_gateway_id
   internet_transit_gateway_id = var.internet_transit_gateway_id
 
   private_prefix_list_ids = var.private_additional_tgw_routes_prefix_list
@@ -46,11 +45,7 @@ module "route_tables" {
 
   private_route_table_association = var.private_route_table_association
 
-  capella_cidr_block = var.capella_cidr_block
-  capella_peering_id = var.capella_peering_id
-
-  capella_cidr_block_uat = var.capella_cidr_block_uat
-  capella_peering_id_uat = var.capella_peering_id_uat
+  gohealth_transit_gateway_id = ""
 }
 
 module "vpc_endpoint" {

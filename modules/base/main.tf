@@ -1,14 +1,14 @@
 // Creates the network topology
-module "base_module" {
-  source = "../infrastructure/networking/topology"
-
-  region = var.region
-}
+# module "base_module" {
+#   source = "../infrastructure/networking/topology"
+#
+#   region = var.region
+# }
 
 module "acl_module" {
   source      = "../infrastructure/networking/acl"
   environment = var.environment
-  vpc         = module.base_module.vpc_id
+  vpc         = var.vpc_id
 }
 
 module "iam_users" {

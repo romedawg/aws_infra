@@ -15,11 +15,12 @@ resource "aws_organizations_organization" "rome" {
   ]
 }
 
-# Network topology, Subnets, ACLS, etc.. all things networking
+# Network topology, Subnets, ACLS, etc.. all things networking - only one subnet, old outdated module
 module "base_network_topology" {
   source      = "../../../modules/base"
   environment = local.environment
   region      = local.aws_region
+  vpc_id = module.env.vpc_id
 }
 
 #######################
@@ -27,6 +28,7 @@ module "base_network_topology" {
 #######################
 module "ecs_cluster" {
   source = "../../../modules/infrastructure/ecs/cluster"
+  cluster_name = "rome"
 }
 
 # Route53 items

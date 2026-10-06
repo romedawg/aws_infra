@@ -60,5 +60,4 @@ module "route_tables" {
   tgw_us_east_2c_subnet_id     = module.subnets.tgw_us_east_2c_subnet_id
 
 
-  rome_network_egress_tgw_id = module.transit_gateway.egress_tgw_id
 }

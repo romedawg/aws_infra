@@ -1,7 +1,9 @@
 .idea
 .terraform
+.terraform*
 terraform.tfstate
 terraform.tfstate.backup
+errored.tfstate
 DS.Store
 ok.vscode
 logs

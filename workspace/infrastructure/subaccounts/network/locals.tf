@@ -10,7 +10,8 @@ locals {
 
   // AWS account ids to share TGW
   sub_account_ids = [
-    "024441264067", // sandbox
+    # "024441264067", // sandbox
+    "701164309191", // main
     # "", // qa
   ]
   vpc_cidr = "10.36.94.0/24"

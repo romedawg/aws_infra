@@ -1,5 +1,5 @@
 locals {
-  root_account_id = "453357546588"
+  root_account_id = "701164309191"
 }
 
 data "aws_caller_identity" "current" {}
